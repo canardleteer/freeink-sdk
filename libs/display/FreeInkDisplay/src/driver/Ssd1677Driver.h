@@ -100,6 +100,7 @@ class Ssd1677Driver : public PanelDriver {
   // plane as the complement of the target so every pixel — background included —
   // is re-driven toward its target each update. See displayImpl().
   void setBackgroundHint(bool darkBackground) override { _darkBackground = darkBackground; }
+  bool supportsDarkBackgroundRedrive() const override { return true; }
 
  private:
   void initController(EpdBus& bus);

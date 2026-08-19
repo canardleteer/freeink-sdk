@@ -453,7 +453,9 @@ void Ssd1677Driver::displayImpl(EpdBus& bus, const uint8_t* fb, const uint8_t* p
   // erases AA residue (its periodic 0xD7 promote).
   if (_inGrayscaleMode) {
     _inGrayscaleMode = false;
-    if (mode == RefreshMode::Fast) {
+    // Inverted Fast already re-drives every pixel via the complement RED path.
+    // Promoting to Half would run the absolute GC waveform through white.
+    if (mode == RefreshMode::Fast && !_darkBackground) {
       mode = RefreshMode::Half;
     }
   }
@@ -514,7 +516,7 @@ void Ssd1677Driver::displayWindow(EpdBus& bus, const uint8_t* fb, const uint8_t*
   // parity), exit grayscale by painting the whole frame with the single-pass
   // HALF clean instead; the window content is part of fb, so nothing is lost.
   if (_inGrayscaleMode) {
-    displayImpl(bus, fb, nullptr, RefreshMode::Half, turnOff, /*async=*/false);
+    displayImpl(bus, fb, nullptr, _darkBackground ? RefreshMode::Fast : RefreshMode::Half, turnOff, /*async=*/false);
     return;
   }
 

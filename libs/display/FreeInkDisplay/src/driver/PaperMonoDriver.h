@@ -81,6 +81,7 @@ class PaperMonoDriver final : public PanelDriver {
   // Inverted (dark-background) content: runOtpUpdate() widens its drive set to
   // re-blacken the unchanged background every update. See the comment there.
   void setBackgroundHint(bool darkBackground) override { _darkBackground = darkBackground; }
+  bool supportsDarkBackgroundRedrive() const override { return true; }
 
   void setGrayParams(const PaperMonoGrayParams& params);
   void abortGray() { abortPostRefresh(); }

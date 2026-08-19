@@ -510,6 +510,8 @@ bool PaperMonoDriver::runOtpUpdate(EpdBus& bus, const uint8_t* bwTarget, bool fo
   // black-going impulse on static background is a deliberate DC imbalance in
   // the safe direction for a dark background (residue there is always light);
   // the user's corrective cadence rebalances, as with the entry-0 top-up.
+  // Only Full is a corrective resync; HALF vs Fast does not pick a waveform,
+  // so a facade inverted-HALF→Fast remap does not change this path.
   const uint8_t darkDrive = _darkBackground ? 0xFFu : 0x00u;
 #ifdef ENABLE_SERIAL_LOG
   uint32_t changed = 0;

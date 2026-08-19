@@ -78,6 +78,7 @@ class Uc8179Driver : public PanelDriver {
   // as the complement of the target so every pixel is re-driven toward its
   // target each update. See displayStart().
   void setBackgroundHint(bool darkBackground) override { _darkBackground = darkBackground; }
+  bool supportsDarkBackgroundRedrive() const override { return true; }
 
   // --- 4-level grayscale (anti-aliasing) ---
   // CrossPoint supplies two full 1bpp overlay masks. The driver combines them

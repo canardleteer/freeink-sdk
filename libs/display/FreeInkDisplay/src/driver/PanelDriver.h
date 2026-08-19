@@ -162,6 +162,11 @@ class PanelDriver {
   // non-flashing. Drivers may use this to widen their drive set (re-blacken
   // the unchanged background each update) or bias their deghost direction.
   virtual void setBackgroundHint(bool darkBackground) { (void)darkBackground; }
+  // True when inverted Fast already re-drives unchanged dark-background
+  // pixels (complement old plane / equivalent). The facade may then send
+  // inverted HALF as Fast instead of OTP GC-through-white. Default false:
+  // inverted HALF stays the driver's strong clean.
+  virtual bool supportsDarkBackgroundRedrive() const { return false; }
   // Capture the cancellation generation at the start of a logical UI render.
   // This must happen before CPU-side composition: input arriving while an old
   // frame is being composed must still cancel its optional post-refresh work.

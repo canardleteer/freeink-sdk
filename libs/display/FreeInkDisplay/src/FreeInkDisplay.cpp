@@ -573,6 +573,14 @@ void FreeInkDisplay::displayBuffer(RefreshMode mode, bool turnOffScreen) {
   if (_inversionDirty && mode == FAST_REFRESH) {
     mode = HALF_REFRESH;
   }
+  // Inverted HALF runs OTP GC through white. Drivers that already re-drive a
+  // dark background on Fast (complement old plane, DU scan time) take that
+  // path instead. Others keep HALF so invert-toggle polarity and periodic
+  // cleanup do not become a weaker Fast. Uninverted HALF stays an absolute
+  // clean. Full is never remapped.
+  if (_inverted && mode == HALF_REFRESH && _driver && _driver->supportsDarkBackgroundRedrive()) {
+    mode = FAST_REFRESH;
+  }
 #ifdef EINK_DISPLAY_SINGLE_BUFFER_MODE
   if (_inverted) invertBytes(frameBuffer, bufferSize);
   _driver->display(_bus, frameBuffer, nullptr, toInternal(mode), turnOffScreen);

@@ -78,6 +78,7 @@ class Uc8253X3Driver : public PanelDriver {
   // as the complement of the target so every pixel is re-driven toward its
   // target each update. See displayStart().
   void setBackgroundHint(bool darkBackground) override { _darkBackground = darkBackground; }
+  bool supportsDarkBackgroundRedrive() const override { return true; }
 
  private:
   void initController(EpdBus& bus);

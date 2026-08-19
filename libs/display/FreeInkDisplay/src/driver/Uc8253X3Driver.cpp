@@ -170,8 +170,8 @@ bool Uc8253X3Driver::displayStart(EpdBus& bus, const uint8_t* fb, const uint8_t*
     grayscaleRevert(bus, fb);
   }
 
-  const bool fastMode = (mode == RefreshMode::Fast);
-  const bool halfMode = (mode == RefreshMode::Half);
+  const bool fastMode = (mode == RefreshMode::Fast) || (_darkBackground && mode == RefreshMode::Half);
+  const bool halfMode = (mode == RefreshMode::Half) && !_darkBackground;
   const bool forcedFullSync = _forceFullSyncNext;
   const bool doFullSync =
       (!fastMode && !halfMode) || !_redRamSynced || _initialFullSyncsRemaining > 0 || forcedFullSync;

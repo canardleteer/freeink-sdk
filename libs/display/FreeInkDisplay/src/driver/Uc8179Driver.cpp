@@ -289,8 +289,11 @@ bool Uc8179Driver::displayStart(EpdBus& bus, const uint8_t* fb, const uint8_t* p
   // just-displayed frame in displayFinish; a full refresh reseeds it to white.)
   // Half is the explicit strong scrub. Post-AA Fast paints are intercepted by
   // display() and use stock's non-flashing XTF_PRE_BW_MID transition instead.
-  const bool scrub = (mode == RefreshMode::Half);
-  const bool fast = (mode == RefreshMode::Fast) && !scrub && !_needFullClear && _oldPlaneValid;
+  // Inverted Half uses the same complement-DU as Fast so the cleanup slot
+  // does not run OTP GC through white. Full and first-clear stay GC.
+  const bool darkDu = _darkBackground && (mode == RefreshMode::Fast || mode == RefreshMode::Half);
+  const bool scrub = (mode == RefreshMode::Half) && !darkDu;
+  const bool fast = (mode == RefreshMode::Fast || darkDu) && !scrub && !_needFullClear && _oldPlaneValid;
 
   // NEW plane (0x13) = new frame.
   streamPlane(bus, CMD_DTM2, fb);

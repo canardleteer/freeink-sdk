@@ -82,6 +82,7 @@ class Uc8279X4Driver : public PanelDriver {
   // as the complement of the target so every pixel is re-driven toward its
   // target each update. See displayStart().
   void setBackgroundHint(bool darkBackground) override { _darkBackground = darkBackground; }
+  bool supportsDarkBackgroundRedrive() const override { return true; }
 
   // --- 4-level grayscale (anti-aliasing) ---
   // External-LUT path per the vendor reference: both planes bitwise-INVERTED

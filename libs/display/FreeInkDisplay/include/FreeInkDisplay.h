@@ -28,6 +28,9 @@ class FreeInkDisplay {
   ~FreeInkDisplay() = default;
 
   // Refresh modes (public contract — full / balanced-half / fast).
+  // While inverted, HALF on drivers that re-drive a dark background is
+  // complement-DU cleanup (same scan time as Fast), not OTP GC-through-white.
+  // Full stays the absolute GC. Uninverted HALF is unchanged.
   enum RefreshMode { FULL_REFRESH, HALF_REFRESH, FAST_REFRESH };
 
   // Select panel geometry/controller before begin().
@@ -95,6 +98,8 @@ class FreeInkDisplay {
   // facade transforms frames only while sending them to the panel. The first
   // refresh after a mode change is automatically promoted from FAST to HALF
   // so single-buffer differential panels cannot compare opposite polarities.
+  // Drivers that already re-drive unchanged dark-background pixels then take
+  // Fast complement-DU instead of GC-through-white; others keep that HALF.
   void setInverted(bool inverted);
   bool toggleInverted();
   bool isInverted() const { return _inverted; }

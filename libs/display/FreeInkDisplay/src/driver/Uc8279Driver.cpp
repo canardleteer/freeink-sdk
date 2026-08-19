@@ -128,8 +128,10 @@ bool Uc8279Driver::displayStart(EpdBus& bus, const uint8_t* fb, const uint8_t* p
   // first paint, a forced resync, and while the boot initial-full budget is
   // unspent (so the first content screen after boot is a real clear, since
   // CrossPoint paints home with FAST); DU only for a Fast request with a baseline.
-  const bool useGc = (mode != RefreshMode::Fast) || !_oldPlaneValid || _forceFullSyncNext ||
-                     _initialFullsRemaining > 0;
+  // Inverted Half uses the DU bank + complement DTM1 instead of OTP GC.
+  // Boot budget, forced resync, and a missing baseline still take GC.
+  const bool wantDu = (mode == RefreshMode::Fast) || (_darkBackground && mode == RefreshMode::Half);
+  const bool useGc = !wantDu || !_oldPlaneValid || _forceFullSyncNext || _initialFullsRemaining > 0;
 
   bus.cmd(CMD_PARTIAL_IN);  // enter the full-panel PTL window set in init
 
